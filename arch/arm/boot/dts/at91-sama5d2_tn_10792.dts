@@ -1,0 +1,450 @@
+/dts-v1/;
+#include "sama5d2.dtsi"
+#include "sama5d2-pinfunc.h"
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+    model = "Atmel SAMA5D2 TN 10792";
+    compatible = "atmel,sama5d2", "atmel,sama5";
+
+    aliases {
+        serial0 = &uart0;   /* Debug */
+        serial1 = &uart4;   /* User CLI */
+        spi1 = &spi1;       /* 32MB SPI-NOR */
+            spi3 = &qspi0;      /* Redirect for u-boot 'sf probe' - 256MB SPI-NAND */
+            qspi0 = &qspi0;     /* 256MB SPI-NAND */
+
+            tcb0 = &tcb0;
+        tcb1 = &tcb1;
+    };
+
+    chosen {
+        stdout-path = "serial0:115200n8";
+        u-boot,dm-pre-reloc;
+    };
+
+    clocks {
+        slow_xtal {
+            clock-frequency = <32768>;
+        };
+
+        main_xtal {
+            clock-frequency = <12000000>;
+        };
+    };
+
+    leds {
+        compatible = "gpio-leds";
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_led_gpio_default>;
+        status = "okay";
+
+        green {
+            label = "green";
+            gpios = <&pioAlt 33 GPIO_ACTIVE_LOW>;
+        };
+
+        blue {
+            label = "blue";
+            gpios = <&pioAlt 34 GPIO_ACTIVE_LOW>;
+            linux,default-trigger = "heartbeat";
+        };
+    };
+
+    ahb {
+        apb {
+            u-boot,dm-pre-reloc;
+
+                pmc: pmc@f0014000 {
+                    u-boot,dm-pre-reloc;
+
+                    main: mainck {
+                    u-boot,dm-pre-reloc;
+                };
+
+                plla: pllack {
+                    u-boot,dm-pre-reloc;
+                };
+
+                utmi: utmick {
+                    u-boot,dm-pre-reloc;
+                };
+
+                mck: masterck {
+                    u-boot,dm-pre-reloc;
+                };
+
+                h32ck: h32mxck {
+                    u-boot,dm-pre-reloc;
+                };
+
+                periph32ck {
+                    u-boot,dm-pre-reloc;
+
+                    macb0_clk: macb0_clk {
+                        u-boot,dm-pre-reloc;
+                    };
+
+                    pioAlt_clk: pioAlt_clk {
+                        u-boot,dm-pre-reloc;
+                    };
+
+                    uart0_clk: uart0_clk {
+                        u-boot,dm-pre-reloc;
+                    };
+
+                    spi1_clk: spi1_clk {
+                        u-boot,dm-pre-reloc;
+                    };
+                };
+
+                periph64ck {
+                    u-boot,dm-pre-reloc;
+
+                    qspi0_clk: qspi0_clk {
+                        u-boot,dm-pre-reloc;
+                    };
+                };
+
+                gck {
+                    u-boot,dm-pre-reloc;
+                };
+
+                pmc_fast_restart {
+                    compatible = "atmel,sama5d2-pmc-fast-startup";
+                    #address-cells = <1>;
+                    #size-cells = <0>;
+
+                    atmel,wakeup-rtc-timer;
+
+                    wkpin: input@0 {
+                        reg = <0>;
+                    };
+
+                    gmac_wol: input {
+                        reg = <10>;
+                        atmel,wakeup-active-high;
+                    };
+                };
+            };
+
+            qspi0: spi@f0020000 {
+                cs-gpios = <&pioAlt 23 0>, <0>, <0>, <0>;
+                pinctrl-names = "default";
+                /* Kernel way*/
+                pinctrl-0 = <&pinctrl_qspi0_default>;
+                /* U-boot way*/
+                pinctrl-0 = <&pinctrl_qspi0_sck_cs_default &pinctrl_qspi0_dat_default>;
+                status = "okay";
+                u-boot,dm-pre-reloc;
+
+                spi_flash@0 {
+                    compatible = "spi-flash";
+                    reg = <0>;
+                    spi-max-frequency = <50000000>;
+                    spi-rx-bus-width = <4>;
+                    spi-tx-bus-width = <4>;
+                    u-boot,dm-pre-reloc;
+                };
+            };
+
+            spi1: spi@fc000000 {
+                cs-gpios = <&pioAlt 68 0>, <0>, <0>, <0>;
+                pinctrl-names = "default";
+                pinctrl-0 = <&pinctrl_spi1_default>;
+                status = "okay";
+                u-boot,dm-pre-reloc;
+
+                spi_flash@0 {
+                    compatible = "spi-flash";
+                    reg = <0>;
+                    spi-max-frequency = <50000000>;
+                    u-boot,dm-pre-reloc;
+                };
+            };
+
+            macb_0: ethernet@f8008000 {
+                pinctrl-names = "default";
+                pinctrl-0 = <&pinctrl_macb0_rmii>;
+                phy-mode = "rmii";
+                phy = <&phy0>;
+                status = "okay";
+                u-boot,dm-pre-reloc;
+
+                fixed-link {
+                        speed = <100>;
+                        full-duplex;
+                        u-boot,dm-pre-reloc;
+                };
+
+                mdio_0: mdio_bus {
+                    u-boot,dm-pre-reloc;
+                    #address-cells = <1>;
+                    #size-cells = <0>;
+                    reg = <16>;
+                    phy0: ethernet-phy@0 {
+                        reg = <999>;
+                    };
+                };
+            };
+            dsa@0 {
+                compatible = "marvell,dsa";
+                u-boot,dm-pre-reloc;
+
+                #address-cells = <2>;
+                #size-cells = <0>;
+
+                dsa,ethernet = <&macb_0>;
+                dsa,mii-bus = <&mdio_0>;
+
+                switch@0 {
+                    #address-cells = <1>;
+                    #size-cells = <0>;
+                    reg = <0 0>;
+                    port@3 {
+                        reg = <3>;
+                        label = "lan0";
+                    };
+                    port@4 {
+                        reg = <4>;
+                        label = "lan1";
+                     };
+                     port@5 {
+                        reg = <5>;
+                        label = "lan2";
+                     };
+                     port@6 {
+                        reg = <6>;
+                        label = "cpu";
+                     };
+                };
+            };
+
+            uart0: serial@f801c000 {
+                pinctrl-names = "default";
+                pinctrl-0 = <&pinctrl_uart0_default>;
+                atmel,use-dma-rx;
+                atmel,use-dma-tx;
+                status = "okay";
+                u-boot,dm-pre-reloc;
+            };
+
+            uart4: serial@fc00c000 {
+                pinctrl-names = "default";
+                pinctrl-0 = <&pinctrl_uart4_default>;
+                atmel,use-dma-rx;
+                atmel,use-dma-tx;
+                status = "okay";
+            };
+
+            shdwc@f8048010 {
+                atmel,shdwc-debouncer = <976>;
+                atmel,wakeup-rtc-timer;
+
+                input@0 {
+                    reg = <0>;
+                    atmel,wakeup-type = "low";
+                };
+            };
+
+            watchdog@f8048040 {
+                status = "okay";
+            };
+
+            i2c0: i2c@f8028000 {
+                dmas = <0>, <0>;
+                pinctrl-names = "default";
+                pinctrl-0 = <&pinctrl_i2c0_default>;
+                status = "okay";
+            };
+
+            adc: adc@fc030000 {
+                dmas = <0>;
+                pinctrl-names = "default";
+                pinctrl-0 = <&pinctrl_adcdiff_default>;
+                status = "okay";
+            };
+
+            pioAlt: gpio@fc038000 {
+                u-boot,dm-pre-reloc;
+                pinctrl {
+                    u-boot,dm-pre-reloc;
+
+                    pinctrl_auxenable_default: auxenable_default {
+                        pinmux = <PIN_PA18__GPIO>;
+                        bias-pull-down;
+                    };
+
+                    /* PA19-20 un-used */
+
+                    pinctrl_lastgasp_irq: lastgasp_irq {
+                        pinmux = <PIN_PA21__GPIO>;
+                        bias-pull-up;
+                    };
+
+                    pinctrl_qspi0_default: qspi0_default {
+                        sck_cs {
+                            pinmux = <PIN_PA22__QSPI0_SCK>,
+                                 <PIN_PA23__QSPI0_CS>;
+                            bias-disable;
+                            u-boot,dm-pre-reloc;
+                        };
+
+                        data {
+                            pinmux = <PIN_PA24__QSPI0_IO0>,
+                                 <PIN_PA25__QSPI0_IO1>,
+                                 <PIN_PA26__QSPI0_IO2>,
+                                 <PIN_PA27__QSPI0_IO3>;
+                            bias-pull-up;
+                            u-boot,dm-pre-reloc;
+                        };
+                    };
+
+                    pinctrl_qspi0_sck_cs_default: qspi0_sck_cs_default {
+                        pinmux = <PIN_PA22__QSPI0_SCK>,
+                             <PIN_PA23__QSPI0_CS>;
+                        bias-disable;
+                        u-boot,dm-pre-reloc;
+                    };
+
+                    pinctrl_qspi0_dat_default: qspi0_dat_default {
+                        pinmux = <PIN_PA24__QSPI0_IO0>,
+                             <PIN_PA25__QSPI0_IO1>,
+                             <PIN_PA26__QSPI0_IO2>,
+                             <PIN_PA27__QSPI0_IO3>;
+                        bias-pull-up;
+                        u-boot,dm-pre-reloc;
+                    };
+
+                    /* PA28-31 un-used */
+
+                    pinctrl_3v3loaddisable_default: 3v3loaddisable_default {
+                        pinmux = <PIN_PB0__GPIO>;
+                        bias-pull-down;
+                    };
+
+                    pinctrl_led_gpio_default: led_gpio_default {
+                        pinmux = <PIN_PB1__GPIO>,
+                             <PIN_PB2__GPIO>;
+                        bias-pull-up;
+                    };
+
+                    pinctrl_uart4_default: uart4_default {
+                        pinmux = <PIN_PB3__URXD4>,
+                             <PIN_PB4__UTXD4>;
+                        bias-disable;
+                    };
+
+                    pinctrl_adcdiff_default: adcdiff_default {
+                        pinmux = <PIN_PB5__PWMH2>,
+                            <PIN_PB6__PWML2>;
+                        bias-disable;
+                    };
+
+                    pinctrl_psemode_default: psemode_default {
+                        pinmux = <PIN_PB7__GPIO>,
+                            <PIN_PB8__GPIO>;
+                        bias-disable;
+                    };
+
+                    pinctrl_pse1_irq: pse1_irq {
+                        pinmux = <PIN_PB9__GPIO>;
+                        bias-pull-up;
+                    };
+
+                    pinctrl_pse2_irq: pse2_irq {
+                        pinmux = <PIN_PB10__GPIO>;
+                        bias-pull-up;
+                    };
+
+                    pinctrl_pse1nreset_default: pse1nreset_default {
+                        pinmux = <PIN_PB11__GPIO>;
+                        bias-pull-down;
+                    };
+
+                    pinctrl_pse2nreset_default: pse2nreset_default {
+                        pinmux = <PIN_PB12__GPIO>;
+                        bias-pull-down;
+                    };
+
+                    pinctrl_tempsensor_irq: tempsensor_irq {
+                        pinmux = <PIN_PB13__GPIO>;
+                        bias-pull-up;
+                    };
+
+                    pinctrl_macb0_rmii: macb0_rmii {
+                        pinmux = <PIN_PB14__GTXCK>,
+                             <PIN_PB15__GTXEN>,
+                             <PIN_PB16__GRXDV>,
+                             <PIN_PB17__GRXER>,
+                             <PIN_PB18__GRX0>,
+                             <PIN_PB19__GRX1>,
+                             <PIN_PB20__GTX0>,
+                             <PIN_PB21__GTX1>,
+                             <PIN_PB22__GMDC>,
+                             <PIN_PB23__GMDIO>;
+                        bias-disable;
+                        u-boot,dm-pre-reloc;
+                    };
+
+                    pinctrl_switch_irq: switch_irq {
+                        pinmux = <PIN_PB24__GPIO>;
+                        bias-pull-up;
+                    };
+
+                    pinctrl_flowcontrol_default: flowcontrol_default {
+                        pinmux = <PIN_PB25__GPIO>;
+                        bias-disable;
+                    };
+
+                    pinctrl_uart0_default: uart0_default {
+                        pinmux = <PIN_PB26__URXD0>,
+                             <PIN_PB27__UTXD0>;
+                        bias-disable;
+                        u-boot,dm-pre-reloc;
+                    };
+
+                    pinctrl_eee_default: eee_default {
+                        pinmux = <PIN_PB28__GPIO>;
+                        bias-disable;
+                    };
+
+                    pinctrl_switchnreset_default: switchnreset_default {
+                        pinmux = <PIN_PB29__GPIO>;
+                        bias-pull-down;
+                        u-boot,dm-pre-reloc;
+                    };
+
+                    pinctrl_nfcnreset_default: nfcnreset_default {
+                        pinmux = <PIN_PB30__GPIO>;
+                        bias-pull-down;
+                    };
+
+                    pinctrl_i2c0_default: i2c0_default {
+                        pinmux = <PIN_PB31__TWD0>,
+                             <PIN_PC0__TWCK0>;
+                        bias-disable;
+                    };
+
+                    pinctrl_spi1_default: spi1_default {
+                        pinmux = <PIN_PC1__SPI1_SPCK>,
+                             <PIN_PC2__SPI1_MOSI>,
+                             <PIN_PC3__SPI1_MISO>,
+                             <PIN_PC4__SPI1_NPCS0>,
+                             <PIN_PC5__SPI1_NPCS1>,
+                             <PIN_PC6__SPI1_NPCS2>;
+                        bias-disable;
+                        u-boot,dm-pre-reloc;
+                    };
+
+                    /* PC7 un-used */
+
+                    pinctrl_nfc_irq: nfc_irq {
+                        pinmux = <PIN_PC8__GPIO>;
+                        bias-pull-up;
+                    };
+                };
+            };
+        };
+    };
+};

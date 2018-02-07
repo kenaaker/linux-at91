@@ -7,6 +7,21 @@ menuconfig ARCH_AT91
 	select SOC_BUS
 
 if ARCH_AT91
+config TN_10792
+	bool "TN PoE++ board"
+	depends on ARCH_MULTI_V7
+	select SOC_SAMA5
+	select CACHE_L2X0
+	select HAVE_FB_ATMEL
+	select HAVE_AT91_UTMI
+	select HAVE_AT91_USB_CLK
+	select HAVE_AT91_H32MX
+	select HAVE_AT91_GENERATED_CLK
+	select HAVE_AT91_AUDIO_PLL
+	select PINCTRL_AT91PIO4
+	help
+	  Select this if you are building a kernel for the SAMA5D2 SOC on the Transition Networks PoE++ board.
+
 config SOC_SAMA5D2
 	bool "SAMA5D2 family"
 	depends on ARCH_MULTI_V7
@@ -20,7 +35,7 @@ config SOC_SAMA5D2
 	select HAVE_AT91_AUDIO_PLL
 	select PINCTRL_AT91PIO4
 	help
-	  Select this if ou are using one of Atmel's SAMA5D2 family SoC.
+	  Select this if you are using one of Atmel's SAMA5D2 family SoC.
 
 config SOC_SAMA5D3
 	bool "SAMA5D3 family"

@@ -44,8 +44,11 @@ dtb-$(CONFIG_SOC_AT91SAM9) += \
 	at91sam9g35ek.dtb \
 	at91sam9x25ek.dtb \
 	at91sam9x35ek.dtb
-dtb-$(CONFIG_SOC_SAM_V7) += \
-	at91-kizbox2.dtb \
+dtb-$(CONFIG_KIZBOX) += \
+	at91-kizbox2.dtb
+dtb-$(CONFIG_TN_10792) += \
+	at91-sama5d2_tn_10792.dtb
+dtb-$(CONFIG_SOC_SAMA5D2) += \
 	at91-sama5d2_ptc_ek.dtb \
 	at91-sama5d27_som1_ek.dtb \
 	at91-sama5d27_som1_ek_pda4.dtb \
@@ -54,7 +57,8 @@ dtb-$(CONFIG_SOC_SAM_V7) += \
 	at91-sama5d2_xplained.dtb \
 	at91-sama5d2_xplained_pda4.dtb \
 	at91-sama5d2_xplained_pda7.dtb \
-	at91-sama5d2_xplained_pda7b.dtb \
+	at91-sama5d2_xplained_pda7b.dtb
+dtb-$(CONFIG_SOC_SAMA5D3) += \
 	at91-sama5d3_xplained.dtb \
 	at91-sama5d3_xplained_pda4.dtb \
 	at91-sama5d3_xplained_pda7.dtb \
@@ -64,7 +68,17 @@ dtb-$(CONFIG_SOC_SAM_V7) += \
 	sama5d34ek.dtb \
 	sama5d35ek.dtb \
 	sama5d36ek.dtb \
-	sama5d36ek_cmp.dtb \
+	sama5d36ek_cmp.dtb
+dtb-$(CONFIG_SOC_SAMA5D4) += \
+	at91-sama5d4_ma5d4evk.dtb \
+	at91-sama5d4_xplained.dtb \
+	at91-sama5d4_xplained_hdmi.dtb \
+	at91-sama5d4_xplained_pda4.dtb \
+	at91-sama5d4_xplained_pda7.dtb \
+	at91-sama5d4_xplained_pda7b.dtb \
+	at91-sama5d4ek.dtb \
+	at91-sama5d4ek_isi.dtb
+dtb-$(CONFIG_VINCO) += \
 	at91-sama5d4_ma5d4evk.dtb \
 	at91-sama5d4_xplained.dtb \
 	at91-sama5d4_xplained_hdmi.dtb \
