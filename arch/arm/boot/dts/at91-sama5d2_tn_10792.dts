@@ -11,10 +11,10 @@
         serial0 = &uart0;   /* Debug */
         serial1 = &uart4;   /* User CLI */
         spi1 = &spi1;       /* 32MB SPI-NOR */
-            spi3 = &qspi0;      /* Redirect for u-boot 'sf probe' - 256MB SPI-NAND */
-            qspi0 = &qspi0;     /* 256MB SPI-NAND */
+        spi3 = &qspi0;      /* Redirect for u-boot 'sf probe' - 256MB SPI-NAND */
+        qspi0 = &qspi0;     /* 256MB SPI-NAND */
 
-            tcb0 = &tcb0;
+        tcb0 = &tcb0;
         tcb1 = &tcb1;
     };
 
@@ -325,25 +325,25 @@
 
                     pinctrl_led_gpio_default: led_gpio_default {
                         pinmux = <PIN_PB1__GPIO>,
-                             <PIN_PB2__GPIO>;
+                                 <PIN_PB2__GPIO>;
                         bias-pull-up;
                     };
 
                     pinctrl_uart4_default: uart4_default {
                         pinmux = <PIN_PB3__URXD4>,
-                             <PIN_PB4__UTXD4>;
+                                 <PIN_PB4__UTXD4>;
                         bias-disable;
                     };
 
                     pinctrl_adcdiff_default: adcdiff_default {
                         pinmux = <PIN_PB5__PWMH2>,
-                            <PIN_PB6__PWML2>;
+                                 <PIN_PB6__PWML2>;
                         bias-disable;
                     };
 
                     pinctrl_psemode_default: psemode_default {
                         pinmux = <PIN_PB7__GPIO>,
-                            <PIN_PB8__GPIO>;
+                                 <PIN_PB8__GPIO>;
                         bias-disable;
                     };
 
@@ -399,7 +399,7 @@
 
                     pinctrl_uart0_default: uart0_default {
                         pinmux = <PIN_PB26__URXD0>,
-                             <PIN_PB27__UTXD0>;
+                                 <PIN_PB27__UTXD0>;
                         bias-disable;
                         u-boot,dm-pre-reloc;
                     };
